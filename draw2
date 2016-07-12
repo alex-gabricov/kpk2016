@@ -1,0 +1,281 @@
+from turtle import Turtle 
+2 default_count_point = 15 #количество узлов в сетке 
+3 default_scale = 1 
+4 default_step_grid = 40 
+5 
+ 
+6 
+ 
+7 def init_drawman(): 
+8     global t, x_current, y_current, _drawman_scale, _step_grid, _count_point  
+9     t = Turtle() 
+10     t.penup() 
+11     x_current = 0 
+12     y_current = 0 
+13     t.goto(x_current, y_current) 
+14     _count_point = default_count_point 
+15     _step_grid = default_step_grid 
+16     drawman_scale(default_scale,default_step_grid) 
+17 
+ 
+18 def drawman_scale(scale , new_step_grid ): 
+19     global _drawman_scale, _step_grid  
+20 ##    
+21     _drawman_scale = new_step_grid / scale 
+22     _step_grid = new_step_grid 
+23     
+24   
+25 def set_size_square(): 
+26     """ 
+27     Установка размера канвы 
+28     count_point - количество единиц, видимых слева, справа, сверху, снизу 
+29     """ 
+30     global  _count_point, _step_grid 
+31     
+32     t.screen.screensize (_count_point*_step_grid, _count_point*_step_grid) 
+33      
+34 def get_size_square(): 
+35     """ 
+36     Возвращает ширину и высоту канвы 
+37     """ 
+38     return t.screen.screensize() 
+39 
+ 
+40 def set_color(new_color): 
+41     """ 
+42     Установка цвета 
+43     """ 
+44     t.color (new_color) 
+45 
+ 
+46 def draw_grid(): 
+47     """ 
+48     Нарисовать сетку серым цветом 
+49     в конце перо поднято и Черепашка стоит в центре, цвет восстанавливается до черного 
+50     """ 
+51     global _step_grid 
+52     set_color("gray") 
+53      
+54     w,h = get_size_square() 
+55      
+56     w2 = w / 2 
+57     h2 = h / 2 
+58     # вертикальные линии снизу вверх 
+59     x = 0 
+60     print(_step_grid,w2) 
+61     while x <=w2:  
+62         pen_up() 
+63         t.goto(x, -h2) 
+64         pen_down() 
+65         t.goto(x,h2) 
+66         x += _step_grid 
+67     x = 0 
+68     while x >=-w2:  
+69         pen_up() 
+70         t.goto(x, -h2) 
+71         pen_down() 
+72         t.goto(x,h2) 
+73         x -= _step_grid 
+74     # горизонтальные линии слева направо 
+75     y = 0 
+76     while y <= h2:  
+77         pen_up() 
+78         t.goto(-w2, y) 
+79         pen_down() 
+80         t.goto(w2,y) 
+81         y +=_step_grid 
+82     y = 0 
+83     while y >= -h2:  
+84         pen_up() 
+85         t.goto(-w2, y) 
+86         pen_down() 
+87         t.goto(w2,y) 
+88         y -= _step_grid 
+89 
+ 
+90     # окончание работы 
+91     pen_up() 
+92     to_point(0,0) 
+93     set_color("black") 
+94 
+ 
+95 def pen_width(_width): 
+96     t.width (_width) 
+97 
+ 
+98 def draw_axis(number): 
+99     """ 
+100     Нарисовать оси координат  с подписями черным цветом, толщиной 2 пикселя 
+101     number - вид подписи: 
+102     0 - без подписей, 1 - только точка (0,0), 2 - единичный интервал, 3 - все числа 
+103     подписи выводятся коричневым цветом 
+104     """ 
+105     
+106     set_color("black") 
+107      
+108     pen_width(2) 
+109     w,h = get_size_square() 
+110     # горизонтальная ось слева направо 
+111     pen_up() 
+112     t.goto(-w/2+_step_grid/2,0) 
+113     pen_down() 
+114     t.goto(w/2-_step_grid/2,0) 
+115     t.stamp () 
+116     t.right(90) 
+117     pen_up() 
+118     t.forward(15) 
+119     t.left(90) 
+120     t.write('X') 
+121     # вертикальная ось снизу вверх 
+122     pen_up() 
+123     t.goto(0,-h/2+_step_grid/2) 
+124     pen_down() 
+125     t.goto(0,h/2-_step_grid/2) 
+126     t.left(90) 
+127     t.stamp() 
+128     t.left(90) 
+129     pen_up() 
+130     t.forward(15) 
+131          
+132     t.write('Y') 
+133     # подписи к осям 
+134     pen_up() 
+135     set_color("brown") 
+136      
+137     if number == 0: 
+138         pass 
+139     elif number == 1: 
+140         t.goto(0,0) 
+141         t.write('0') 
+142     elif number == 2: 
+143         t.goto(0,0) 
+144         t.write('0') 
+145         t.goto(0,_step_grid) 
+146         t.write(str(int(_default_scale))) 
+147         t.goto(0,-_step_grid) 
+148         t.write(str(int(-_default_scale))) 
+149         t.goto(_step_grid,0) 
+150         t.write(str(int(_default_scale))) 
+151         t.goto(-_step_grid,0) 
+152         t.write(str(int(-_default_scale))) 
+153     else: 
+154         # подписи к горизонтальной оси 
+155         t.goto(0,0) 
+156         t.write('0') 
+157         x = _step_grid 
+158         t.goto(x, 0) 
+159         i = _step_grid /_drawman_scale  
+160         step_i = i 
+161         while x < w/2: 
+162             t.write(str(i)) 
+163             i += step_i 
+164             x += _step_grid 
+165             t.goto(x,0) 
+166         x = -_step_grid 
+167         t.goto(x, 0) 
+168         i = -step_i 
+169         while x > -w/2: 
+170             t.write(str(i)) 
+171             i -= step_i 
+172             x -= _step_grid 
+173             t.goto(x,0) 
+174              
+175         # подписи к вертикальной оси 
+176         y = _step_grid 
+177         t.goto(0, y) 
+178         i = step_i 
+179         while y < h/2: 
+180             t.write(str(i)) 
+181             i += step_i 
+182             y += _step_grid 
+183             t.goto(0, y) 
+184         y = -_step_grid 
+185         t.goto(0, y) 
+186         i = -step_i 
+187         while y > -h/2: 
+188             t.write(str(i)) 
+189             i -= step_i 
+190             y -= _step_grid 
+191             t.goto(0, y) 
+192 
+ 
+193 def speed(new_speed): 
+194     t.speed(new_speed) 
+195      
+196      
+197 def test_drawman(): 
+198     """ 
+199     Тестирование работы Чертёжника 
+200     :return: None 
+201     """ 
+202     global _drawman_scale 
+203     def f(x): 
+204          
+205         return x*x 
+206     pen_down() 
+207     drawman_scale(2,50) 
+208     set_size_square() 
+209     speed(10) 
+210     draw_grid() 
+211     draw_axis(3) 
+212      
+213 ##    for i in range(5): 
+214 ##        on_vector(10, 20) 
+215 ##        on_vector(0, -20) 
+216 ##    pen_up() 
+217 ##    to_point(0, 0) 
+218 
+ 
+219    
+220     pen_up() 
+221 
+ 
+222     x = -5.0 
+223     to_point(x,f(x)) 
+224     pen_down() 
+225     while x<5: 
+226         to_point(x, f(x)) 
+227         x += 0.1 
+228     pen_up() 
+229 
+ 
+230 
+ 
+231 
+ 
+232 def pen_down(): 
+233     t.pendown() 
+234 
+ 
+235 
+ 
+236 def pen_up(): 
+237     t.penup() 
+238 
+ 
+239 
+ 
+240 def on_vector(dx, dy): 
+241     global x_current, y_current, _drawman_scale 
+242     to_point(x_current +  dx, y_current + dy) 
+243 
+ 
+244 
+ 
+245 def to_point(x, y): 
+246     global x_current, y_current, _drawman_scale 
+247     x_current = x 
+248     y_current = y 
+249     t.goto(_drawman_scale*x_current, _drawman_scale*y_current) 
+250 
+ 
+251 
+ 
+252 init_drawman() 
+253 
+ 
+254 if __name__ == '__main__': 
+255     import time 
+256      
+257     test_drawman() 
+258     time.sleep(3) 
