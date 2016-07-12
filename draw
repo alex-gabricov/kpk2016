@@ -1,0 +1,217 @@
+from turtle import Turtle 
+2 default_scale = 10 #коэффициент масштабирования Чертежника, по умолчанию = 10 
+3 default_pen_size = 1 #толщина линии Чертежника, по умолчанию = 1 
+4 
+ 
+5 def init_drawman(): 
+6     global t, x_current, y_current, _drawman_scale, _drawman_pen_size 
+7     t = Turtle() 
+8     t.penup() 
+9     x_current = 0 
+10     y_current = 0 
+11     t.goto(x_current, y_current) 
+12     drawman_scale(default_scale) 
+13     drawman_pen_size(default_pen_size) 
+14 
+ 
+15 def drawman_scale(scale): 
+16     global _drawman_scale 
+17     _drawman_scale = scale 
+18 
+ 
+19 def drawman_pen_size(pen_size): 
+20     """ 
+21     :param pen_size: толщина линии Чертежника, диапазон от 1 до 10 
+22     """ 
+23     global _drawman_pen_size 
+24     if pen_size > 10: 
+25         _drawman_pen_size = t.pensize(10) 
+26     elif pen_size < 1: 
+27         _drawman_pen_size = t.pensize(1) 
+28     else: 
+29         _drawman_pen_size = t.pensize(pen_size) 
+30 
+ 
+31 def test_drawman(): 
+32     """ 
+33     Тестирование работы Чертёжника 
+34     :return: None 
+35     """ 
+36     pen_down() 
+37     for i in range(5): 
+38         on_vector(10, 20) 
+39         on_vector(0, -20) 
+40     pen_up() 
+41     to_point(0, 0) 
+42 
+ 
+43 def drawman_draw_grid(color_grid): 
+44     """ 
+45     рисует кооринтаную сетку без осей 
+46     запоминает размер окна поля 
+47     x_width - ширина окна поля в пикселах 
+48     y_height - высота окна поля в пикселах 
+49     :param color_grid: цвет линий сетки указывается пользоватлем Чертежника при вызове команды drawman_draw_grid(color) 
+50     :return: 
+51     """ 
+52     x_width = t.screen.window_width() 
+53     y_height = t.screen.window_height() 
+54     t.speed(25) 
+55     drawman_draw_Hline(x_width, y_height, color_grid) 
+56     drawman_draw_Vline(x_width, y_height, color_grid) 
+57     pen_up() 
+58     to_point(0, 0) 
+59     t.speed(1) 
+60 
+ 
+61 def drawman_draw_Vline(x_width, y_height, color): 
+62     """ 
+63     рисование линий сетки из центра поля (т.е. из начальной позиции Чертежника) 
+64  
+65     рисует вертикальные линии сетки отельно по каждой четверти, учитывая масштабирование Четрежника 
+66  
+67     :param color: цвет линий сетки указывается пользоватлем Чертежника при вызове команды drawman_draw_grid(color) 
+68     :param x_width: ширина окна поля Чертежника, автоматически определяется при вызове команды drawman_draw_grid() 
+69     :param y_height: высота окна поля Чертежника, автоматически определяется при вызове команды drawman_draw_grid() 
+70     :return: 
+71     """ 
+72     x = 0 
+73     y = 0 
+74     t.goto(x, y) 
+75     while x <= x_width//2: 
+76         t.pencolor(color) 
+77         t.goto(x, y) 
+78         t.pendown() 
+79         t.goto(x, y_height//2) 
+80         t.penup() 
+81         x = x + x_width//_drawman_scale 
+82 
+ 
+83     x = 0 
+84     y = 0 
+85     t.goto(x, y) 
+86     while x >= -x_width//2: 
+87         t.pencolor(color) 
+88         t.goto(x, y) 
+89         t.pendown() 
+90         t.goto(x, y_height//2) 
+91         t.penup() 
+92         x = x - x_width//_drawman_scale 
+93 
+ 
+94     x = 0 
+95     y = 0 
+96     t.goto(x, y) 
+97     while x >= -x_width//2: 
+98         t.pencolor(color) 
+99         t.goto(x, y) 
+100         t.pendown() 
+101         t.goto(x, -y_height//2) 
+102         t.penup() 
+103         x = x - x_width//_drawman_scale 
+104 
+ 
+105     x = 0 
+106     y = 0 
+107     t.goto(x, y) 
+108     while x <= x_width//2: 
+109         t.pencolor(color) 
+110         t.goto(x, y) 
+111         t.pendown() 
+112         t.goto(x, -y_height//2) 
+113         t.penup() 
+114         x = x + x_width//_drawman_scale 
+115 
+ 
+116 
+ 
+117 def drawman_draw_Hline(x_width, y_height, color): 
+118     """ 
+119     рисование линий сетки из центра поля (т.е. из начальной позиции Чертежника) 
+120  
+121     рисует горизонтальные линии сетки отельно по каждой четверти, учитывая масштабирование Четрежника 
+122  
+123     :param color: цвет линий сетки указывается пользоватлем Чертежника при вызове команды drawman_draw_grid(color) 
+124     :param x_width: ширина окна поля Чертежника, автоматически определяется при вызове команды drawman_draw_grid() 
+125     :param y_height: высота окна поля Чертежника, автоматически определяется при вызове команды drawman_draw_grid() 
+126     """ 
+127     y = 0 
+128     x = 0 
+129     t.goto(x, y) 
+130     while y <= y_height//2: 
+131         t.pencolor(color) 
+132         t.goto(x, y) 
+133         t.pendown() 
+134         t.goto(x_width//2, y) 
+135         t.penup() 
+136         y = y + y_height//_drawman_scale 
+137 
+ 
+138     y = 0 
+139     x = 0 
+140     t.goto(x, y) 
+141     while y >= -y_height//2: 
+142         t.pencolor(color) 
+143         t.goto(x, y) 
+144         t.pendown() 
+145         t.goto(x_width//2, y) 
+146         t.penup() 
+147         y = y - y_height//_drawman_scale 
+148 
+ 
+149     y = 0 
+150     x = 0 
+151     t.goto(x, y) 
+152     while y >= -y_height//2: 
+153         t.pencolor(color) 
+154         t.goto(x, y) 
+155         t.pendown() 
+156         t.goto(-x_width//2, y) 
+157         t.penup() 
+158         y = y - y_height//_drawman_scale 
+159 
+ 
+160     y = 0 
+161     x = 0 
+162     t.goto(x, y) 
+163     while y <= y_height//2: 
+164         t.pencolor(color) 
+165         t.goto(x, y) 
+166         t.pendown() 
+167         t.goto(-x_width//2, y) 
+168         t.penup() 
+169         y = y + y_height//_drawman_scale 
+170 
+ 
+171 def pen_down(): 
+172     t.pendown() 
+173 
+ 
+174 
+ 
+175 def pen_up(): 
+176     t.penup() 
+177 
+ 
+178 
+ 
+179 def on_vector(dx, dy): 
+180     to_point(x_current + dx, y_current + dy) 
+181 
+ 
+182 
+ 
+183 def to_point(x, y): 
+184     global x_current, y_current 
+185     x_current = x 
+186     y_current = y 
+187     t.goto(_drawman_scale*x_current, _drawman_scale*y_current) 
+188 
+ 
+189 
+ 
+190 init_drawman() 
+191 if __name__ == '__main__': 
+192     import time 
+193     test_drawman() 
+194     time.sleep(10) 
