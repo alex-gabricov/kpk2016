@@ -1,0 +1,62 @@
+import tkinter 
+2 
+ 
+3 
+ 
+4 def button1_command(): 
+5     print('Button 1 default command.') 
+6 
+ 
+7 
+ 
+8 def print_hello(event): 
+9     print(event.num) 
+10     print(event.x, event.y) 
+11     #print(event.x_root, event.y_root) 
+12     me = event.widget 
+13     # что можно сделать с me? 
+14     if me == button1: 
+15         print('Hello!') 
+16     elif me == button2: 
+17         print('You pressed button 2!') 
+18     else: 
+19         raise ValueError() 
+20 
+ 
+21 
+ 
+22 def init_main_window(): 
+23     """ 
+24     Инициализация главного окна: создание всех необходимых виджетов и их упаковка. 
+25     :return: 
+26     """ 
+27     global root, button1, button2, label, text, scale 
+28 
+ 
+29     root = tkinter.Tk() 
+30 
+ 
+31     button1 = tkinter.Button(root, text="Button 1", command=button1_command) 
+32     button1.bind("<Button>", print_hello) 
+33 
+ 
+34     button2 = tkinter.Button(root, text="Button 2") 
+35     button2.bind("<Button>", print_hello) 
+36 
+ 
+37     variable = tkinter.IntVar(0) 
+38     label = tkinter.Label(root, textvariable=variable) 
+39     scale = tkinter.Scale(root, orient=tkinter.HORIZONTAL, length=300, 
+40                           from_=0, to=100, tickinterval=10, resolution=5, variable=variable) 
+41     text = tkinter.Entry(root, textvariable=variable) 
+42 
+ 
+43     for obj in button1, button2, label, scale, text: 
+44         obj.pack() 
+45 
+ 
+46 if __name__ == "__main__": 
+47     init_main_window() 
+48 
+ 
+49     root.mainloop() 
